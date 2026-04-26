@@ -1,0 +1,377 @@
+================================================================================
+         Scheduling System
+         USER INSTRUCTION GUIDE
+================================================================================
+
+================================================================================
+PART 1 — INSTALLATION & SETUP
+================================================================================
+
+REQUIREMENTS
+  - XAMPP (Apache + MySQL)
+  - PHP 8.x
+  - web browser (Chrome, Firefox, Edge)
+
+STEP-BY-STEP INSTALLATION
+
+  Step 1: Copy the Project Folder
+    Place the entire "scheduling_system" folder inside your XAMPP htdocs:
+      C:\xampp\htdocs\scheduling_system\
+
+  Step 2: Start XAMPP
+    Open the XAMPP Control Panel.
+    Click "Start" next to both Apache and MySQL.
+    Wait until both show green status indicators.
+
+  Step 3: Initialize the Database
+    Open your browser and go to:
+      http://localhost/scheduling_system/setup.php
+
+  Step 4: Open the App
+    Go to:
+      http://localhost/scheduling_system/index.php
+
+    The dashboard will load and you are ready to use the system.
+
+
+================================================================================
+PART 2 — UNDERSTANDING THE INTERFACE
+================================================================================
+
+The app has a sidebar navigation with the following main sections:
+
+  Dashboard            — Overview of today's schedule, stats, and room status
+  Schedule Builder     — Create and manage class schedules
+  Professors           — Add and manage professor records
+  Subjects             — Add and manage subject records
+  Room Availability    — See which rooms are free right now or during the week
+  Teacher Load         — Monitor how many units each professor is handling
+  Conflicts            — View and resolve scheduling conflicts
+  Export               — Download schedule data as CSV or printable PDF
+
+================================================================================
+PART 3 — MAIN FEATURES EXPLAINED
+================================================================================
+
+------------------------------------------------------------------------
+FEATURE 1: DASHBOARD
+------------------------------------------------------------------------
+The Dashboard is the home screen. It shows a live snapshot of the system:
+
+  Stats Cards:
+    - Rooms Available Now — how many rooms are currently unoccupied
+    - Active Professors   — total number of professors in the system
+    - Subjects            — total number of active subjects
+    - Scheduled Classes   — total number of schedules created
+    - Active Conflicts    — number of unresolved scheduling conflicts
+                           (turns red if conflicts exist)
+
+  Today's Classes Panel:
+    Shows all classes scheduled for the current day of the week,
+    sorted by start time. Displays subject code, professor name,
+    and room assignment.
+
+  Recently Added Panel:
+    Shows the last 8 schedules added to the system, with color-coded
+    day indicators (each day has a unique color).
+
+  Room Status Grid:
+    A live grid showing every room and whether it is currently
+    occupied or available. Rooms show their type (Lab/Lecture) and available equipment
+    (projector 📽, computers 💻, air conditioning ❄).
+
+------------------------------------------------------------------------
+FEATURE 2: PROFESSOR MANAGEMENT
+------------------------------------------------------------------------
+Located at: pages/professors.php
+
+  What it does:
+    Stores professor records with their personal info, college
+    assignment, specialization/expertise, maximum teaching units,
+    employment type (full-time or part-time), and availability.
+
+  How to add a professor:
+    1. Click "Add Professor" button.
+    2. Fill in: First Name, Last Name, Email, Phone.
+    3. Select their College (CCS, COA, CBA, COE, CED).
+    4. Set their maximum units (default: 21).
+    5. Select employment type (full-time / part-time).
+    6.  enter their specialization/subjects they can teach.
+    7. Save the record.
+
+  Expertise Tags:
+    Each professor can be linked to specific subjects they are
+    qualified to teach. This is used by the Auto-Match feature when
+    suggesting professors for a schedule slot.
+
+  Availability Windows:
+    You can set specific days and time ranges when a professor is
+    available (e.g., Monday 8:00 AM – 5:00 PM). The system uses
+    this when checking for suggesting matches.
+
+------------------------------------------------------------------------
+FEATURE 3: SUBJECT MANAGEMENT
+------------------------------------------------------------------------
+Located at: pages/subjects.php
+
+  What it does:
+    Stores subject records including code, name, number of units,
+    year level, and room requirements.
+
+  How to add a subject:
+    1. Click "Add Subject" button.
+    2. Fill in: Subject Code (e.g., ITP2), Subject Name.
+    3. Enter the number of Units (e.g., 3).
+       IMPORTANT: 1 unit = 1 hour. The end time of a class is
+       automatically calculated from the start time + units.
+    4. Select Year Level (1 to 4).
+       - Year 1 
+       - Year 2 
+       - Year 3 
+       - Year 4 
+    5. Select the College it belongs to.
+    6. Set Room Requirements:
+       - Room Type Required: Lab, Lecture, or Any
+       - Requires Projector: Yes/No
+       - Requires Computers: Yes/No
+       - Requires AC: Yes/No
+    7. Save the record.
+
+  Room requirements are used by Auto-Match to filter and suggest
+  only rooms that meet the subject's needs.
+
+------------------------------------------------------------------------
+FEATURE 4: SCHEDULE BUILDER
+------------------------------------------------------------------------
+Located at: pages/schedule.php
+
+  What it does:
+    The central feature of the system. Lets you manually create
+    class schedules, view them in a grid or list format, and use
+    the Auto-Match tool to automatically assign professors and rooms.
+
+  Views:
+    - Grid View  — A weekly calendar grid showing all time slots
+    - List View  — A flat table of all scheduled classes
+
+  How to manually create a schedule:
+    1. Click "New Schedule" or the "Add" button.
+    2. Select a Subject from the dropdown.
+    3. Select the Day of the Week (Monday through Saturday).
+    4. Select the Start Time (7:00 AM to 7:00 PM in 1-hour increments).
+       The end time is automatically calculated based on the subject's units.
+    5. Select a Professor.
+    6. Select a Room.
+    7. Click Save.
+    The system immediately checks for conflicts before saving.
+
+  Business Rules for Scheduling:
+    - Time slots run from 7:00 AM to 8:00 PM in 1-hour blocks
+    - Days available: Monday through Saturday
+
+------------------------------------------------------------------------
+FEATURE 5: AUTO-MATCH
+------------------------------------------------------------------------
+Located within the Schedule Builder (pages/schedule.php)
+
+  What it does:
+    Instead of manually choosing a professor and room, you can let
+    the system find the best available options for you automatically.
+
+  How to use Auto-Match:
+    1. Select a Subject from the dropdown.
+    2. Select a Day of the Week.
+    3. Select a Start Time.
+    4. Click the "Auto-Match" button.
+
+  The system will then:
+    a) Filter professors who have expertise in the selected subject
+    b) Check that those professors are available on that day and time
+       (no other class scheduled, within their availability window)
+    c) Filter rooms that match the subject's room type requirements
+       (lab vs lecture, projector, computers, AC)
+    d) Check that those rooms are free at the selected day and time
+    e) Present the best matched professor and room as suggestions
+
+  You can accept the suggestion or pick from the filtered lists.
+  This feature dramatically speeds up schedule creation and helps
+  avoid human error in assignments.
+
+------------------------------------------------------------------------
+FEATURE 6: ROOM AVAILABILITY
+------------------------------------------------------------------------
+Located at: pages/room_availability.php
+
+  What it does:
+    Gives a full real-time and weekly view of all 19 rooms
+    (Lab1–Lab4 and rooms 3A through 5E).
+
+  Two views are available:
+
+    Right Now View:
+      Shows every room's current occupancy status. Green means
+      available, red/occupied means a class is currently running.
+      Displays the current class name if occupied.
+
+    Weekly Grid View:
+      A full Mon–Sat grid with all 13 time slots (7 AM – 8 PM).
+      Each cell shows what class (if any) is using that room at
+      that time. Helps identify gaps for scheduling new classes.
+
+  Room Details:
+    Each room card shows:
+      - Room name and type (Lab or Lecture)
+      - Equipment: projector 📽, computers 💻, AC ❄
+      - Current status (Available / Occupied)
+      - Current class details if occupied
+
+------------------------------------------------------------------------
+FEATURE 7: CONFLICT DETECTION
+------------------------------------------------------------------------
+Located at: pages/conflicts.php
+
+  What it does:
+    Automatically scans for and logs scheduling conflicts. Conflicts
+    are flagged immediately when a schedule is saved, and can also
+    be scanned on demand.
+
+  Types of conflicts detected:
+    1. Room Double-Booking    — Two classes assigned to the same room
+                               at the same day and overlapping time
+    2. Teacher Double-Booking — Same professor assigned to two classes
+                               at the same day and overlapping time
+
+  How conflicts appear:
+    - The Dashboard stat card turns RED and shows the conflict count
+    - The Conflicts page lists each conflict with type, description,
+      affected schedule, and detection timestamp
+
+  Resolving conflicts:
+    Review the conflict details and either:
+      - Edit the offending schedule (change room, professor, or time)
+      - Delete and recreate the schedule with a valid assignment
+    Once fixed, mark the conflict as resolved.
+
+------------------------------------------------------------------------
+FEATURE 8: TEACHER LOAD REPORT
+------------------------------------------------------------------------
+Located at: pages/teacher_load.php
+
+  What it does:
+    Shows a summary of how many teaching units each professor is
+    currently assigned for the semester.
+
+  What you see:
+    - Professor name and college
+    - Total units currently scheduled
+    - A progress bar showing load vs their maximum allowed units (default: 21)
+    - Overload warnings if a professor exceeds their maximum units
+
+  This helps administrators balance workload fairly and avoid
+  assigning too many classes to a single professor.
+
+  The report can be exported as a CSV file for external use.
+
+------------------------------------------------------------------------
+FEATURE 9: EXPORT
+------------------------------------------------------------------------
+Located at: pages/export.php
+
+  What it does:
+    Lets you download schedule data in two formats.
+
+  Export options:
+    CSV Export:
+      - Full schedule (all professors, all rooms, all days)
+      - Per professor (filter by a specific professor)
+      - Per room (filter by a specific room)
+      - Teacher load summary
+      Opens in Excel or any spreadsheet application.
+
+    PDF Export:
+      - Generates a printable version of the schedule
+      - Formatted for printing and distribution
+      - Can be filtered by professor, room, or full schedule
+
+================================================================================
+PART 4 — KEY RULES & LOGIC TO REMEMBER
+================================================================================
+
+  1 Unit = 1 Hour
+    The end time of any class is always start time + subject units.
+    Example: A 3-unit subject starting at 8:00 AM ends at 11:00 AM.
+
+  Available Rooms (19 total)
+    Labs (computers + projectors):
+      Lab1 (AC), Lab2 (AC), Lab3 (no AC), Lab4 (no AC) — capacity: 35 each
+    Lecture Rooms:
+      Floor 3: 3A, 3B (with projector+AC), 3C (AC), 3D, 3E — capacity: 45 each
+      Floor 4: 4A, 4B (with projector+AC), 4C (AC), 4D, 4E — capacity: 45 each
+      Floor 5: 5A, 5B (with projector+AC), 5C (AC), 5D, 5E — capacity: 45 each
+
+  Time Slots (13 total)
+    7:00 AM → 8:00 AM → 9:00 AM → 10:00 AM → 11:00 AM → 12:00 PM
+    → 1:00 PM → 2:00 PM → 3:00 PM → 4:00 PM → 5:00 PM → 6:00 PM → 7:00 PM → 8:00 PM
+
+  Max Teaching Load
+    Default maximum is 21 units per professor per semester.
+    This can be changed per professor in the Professors page.
+
+  Semester Configuration
+    Current: 1st Semester, School Year 2025–2026
+    To change this, edit the file: includes/config.php
+    Update: CURRENT_SEMESTER and CURRENT_SY constants.
+
+================================================================================
+PART 5 — CONFIGURATION FILE
+================================================================================
+
+  File location: includes/config.php
+
+  Key settings you can edit:
+
+    define('DB_HOST', 'localhost');      // Your MySQL server address
+    define('DB_USER', 'root');           // Your MySQL username
+    define('DB_PASS', '');              // Your MySQL password
+    define('DB_NAME', 'scheduling_db'); // Your database name
+    define('CURRENT_SEMESTER', '1st Semester');
+    define('CURRENT_SY', '2025-2026');
+
+  These are automatically updated if you use the web setup (setup.php)
+  with non-default credentials.
+
+================================================================================
+PART 6 — RECOMMENDED WORKFLOW (START TO FINISH)
+================================================================================
+
+  For a brand new semester, follow this order:
+
+  Step 1 — Set Up the System
+    Run setup.php to initialize the database (one-time only).
+
+  Step 2 — Add Professors
+    Go to Professors page → Add all professors with their college,
+    specialization, availability, and expertise in subjects.
+
+  Step 3 — Add Subjects
+    Go to Subjects page → Add all subjects with their units, year
+    level, section, and room requirements.
+
+  Step 4 — Link Expertise
+    Make sure each professor has their expertise subjects tagged.
+    This is what powers Auto-Match suggestions.
+
+  Step 5 — Build the Schedule
+    Go to Schedule Builder → For each subject, either:
+      a) Manually pick a professor, room, day, and time, OR
+      b) Use Auto-Match to get intelligent suggestions
+
+  Step 6 — Check Conflicts
+    Go to Conflicts page → Review and resolve any flagged issues.
+    Also watch the Dashboard for the conflict count.
+
+  Step 7 — Review Load
+    Go to Teacher Load page → Confirm no professor is overloaded.
+
+  Step 8 — Export
+    Go to Export page → Download CSV or PDF for distribution.
